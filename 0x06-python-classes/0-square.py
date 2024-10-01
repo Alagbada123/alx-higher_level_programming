@@ -2,5 +2,7 @@
 
 """Define a class square"""
 
+
 class Square:
+	"""THis represents a square."""
     pass
