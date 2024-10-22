@@ -24,8 +24,44 @@ class Square(Rectangle):
 
     @size.setter
     def size(self, value):
+        if isinstance(value, bool):
+            raise TypeError("size must be an integer")
+        if not isinstance(value, int):
+            raise TypeError("size must be an integer")
+        if value <= 0:
+            raise ValueError("size must be > 0")
         self.width = value
         self.height = value
+
+    @property
+    def x(self):
+        """Get/set the x coordinate of the Square."""
+        return self.__x
+
+    @x.setter
+    def x(self, value):
+        if isinstance(value, bool):
+            raise TypeError("x must be an integer")
+        if not isinstance(value, int):
+            raise TypeError("x must be an integer")
+        if value < 0:
+            raise ValueError("x must be >= 0")
+        self.__x = value
+
+    @property
+    def y(self):
+        """Get/set the y coordinate of the Square."""
+        return self.__y
+
+    @y.setter
+    def y(self, value):
+        if isinstance(value, bool):
+            raise TypeError("y must be an integer")
+        if not isinstance(value, int):
+            raise TypeError("y must be an integer")
+        if value < 0:
+            raise ValueError("y must be >= 0")
+        self.__y = value
 
     def update(self, *args, **kwargs):
         """Update the Square.
