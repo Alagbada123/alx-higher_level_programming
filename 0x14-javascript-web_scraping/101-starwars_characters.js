@@ -3,34 +3,31 @@ const request = require('request');
 
 const movieId = process.argv[2];
 const baseUrl = 'https://swapi-api.alx-tools.com/api/films/';
-const fullUrl = baseUrl.concat(movieId);
+const fullUrl = `${baseUrl}${movieId}`;
 
 request(fullUrl, (error, response, body) => {
-  if (!error) {
-    const characters = JSON.parse(body).characters;
-    // Create a variable to store the number of characters processed
-    let charactersProcessed = 0;
-    // Create an empty array to store the character names
-    const characterNames = [];
-    characters.forEach((characterUrl) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const filmData = JSON.parse(body);
+  const characters = filmData.characters;
+
+  // Create an array of promises for character requests
+  const characterPromises = characters.map((characterUrl) => {
+    return new Promise((resolve, reject) => {
       request(characterUrl, (error, response, body) => {
-        if (!error) {
-          const charName = JSON.parse(body).name;
-          // Add the character name to the array
-          characterNames.push(charName);
-        }
-        // Increment the charactersProcessed variable
-        charactersProcessed++;
-        // Check if all characters have been processed
-        if (charactersProcessed === characters.length) {
-          // Log the character names when all characters have been processed
-          characterNames.forEach((actor) => {
-            console.log(actor);
-          });
-        }
+        if (error) reject(error);
+        else resolve(JSON.parse(body).name);
       });
     });
-  } else {
-    console.log(error);
-  }
+  });
+
+  // Resolve all character requests and maintain order
+  Promise.all(characterPromises)
+    .then((names) => {
+      names.forEach((name) => console.log(name));
+    })
+    .catch((err) => console.error(err));
 });
